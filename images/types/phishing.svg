@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" width="240" height="150">
+<rect width="240" height="150" rx="16" fill="#E8F1FF"/>
+<g stroke="#1E293B" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">
+<rect x="62" y="22" width="62" height="108" rx="10" fill="#fff"/><rect x="70" y="36" width="46" height="74" rx="4" fill="#DCEBFF"/>
+<path d="M78 52h30M78 64h22M78 76h28" stroke="#2F80ED"/><circle cx="93" cy="120" r="4" fill="#fff"/>
+<path d="M128 48 l40 -6 l8 26 l-40 6z" fill="#2F80ED"/><text x="152" y="66" font-family="Arial" font-weight="900" font-size="15" fill="#fff" stroke="none" text-anchor="middle" transform="rotate(-8 152 60)">FREE!</text>
+<path d="M150 96 q14 -10 26 4 q-6 14 -20 10" fill="none" stroke="#E5484D"/><path d="M176 100 l10 8" stroke="#E5484D"/></g></svg>

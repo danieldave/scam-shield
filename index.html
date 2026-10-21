@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scam Shield: Think · Spot · Stay Safe</title>
+<meta name="description" content="An educational digital-safety awareness platform. Learn common scam signs, practise on made-up examples, check a suspicious message and take the quiz. Works offline.">
+<meta name="theme-color" content="#12305A">
+<link rel="icon" href="images/logo.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ ICONS (drawn once, used everywhere) ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-types" viewBox="0 0 24 24"><path d="M12 3 2 20h20z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4M12 17v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-spot" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M8.5 11h5M11 8.5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-verify" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-ask" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 9a2 2 0 1 1 3 1.7c-.7.4-1 .8-1 1.6M12 14.2v.3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-quiz" viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.3 6.8 19l1-5.8L3.6 9.1l5.8-.8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="m6 6 12 12" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4.5 4.5L19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.3 6.8 19l1-5.8L3.6 9.1l5.8-.8z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <a class="brand" href="#home" aria-label="Scam Shield home">
+    <img src="images/logo.svg" alt="" width="40" height="40">
+    <span><b>Scam Shield</b><small>Think · Spot · Stay Safe</small></span>
+  </a>
+  <nav class="topnav" aria-label="Main">
+    <a href="#home" data-page="home"><svg><use href="#i-home"/></svg>Home</a>
+    <a href="#types" data-page="types"><svg><use href="#i-types"/></svg>Scam Types</a>
+    <a href="#spot" data-page="spot"><svg><use href="#i-spot"/></svg>Spot It</a>
+    <a href="#verify" data-page="verify"><svg><use href="#i-verify"/></svg>Verify</a>
+    <a href="#ask" data-page="ask"><svg><use href="#i-ask"/></svg>Q&amp;A</a>
+    <a href="#quiz" data-page="quiz"><svg><use href="#i-quiz"/></svg>Quiz</a>
+  </nav>
+  <a class="points" href="#quiz" title="Knowledge earned"><svg><use href="#i-star"/></svg><span id="pointsTop">0</span> pts</a>
+</header>
+
+<main id="app">
+
+<!-- ================= 1. HOME ================= -->
+<section class="page" id="page-home" data-title="Home">
+  <div class="hero">
+    <div class="hero-text">
+      <p class="eyebrow">Digital scam awareness &amp; verification</p>
+      <h1>Think Before You Click.<br><span>Stay Scam Safe.</span></h1>
+      <p class="lead">Learn the common tricks scammers use, practise on made-up example messages, and know exactly what to do when something feels wrong.</p>
+      <div class="btns">
+        <a class="btn" href="#spot">Practise: Spot It</a>
+        <a class="btn ghost" href="#verify">Verify a message</a>
+      </div>
+    </div>
+
+    <!-- THE ANIMATION: the scammer shoots a SCAM arrow, our hero blocks it with the Scam Shield -->
+    <figure class="scene" aria-label="Animation: a scammer shoots an arrow marked SCAM, and a student blocks it with the Scam Shield.">
+      <svg viewBox="0 0 600 320" role="img">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DCEBFF"/><stop offset="1" stop-color="#F4F9FF"/></linearGradient>
+          <radialGradient id="glow"><stop offset="0" stop-color="#7FD6FF" stop-opacity=".9"/><stop offset="1" stop-color="#7FD6FF" stop-opacity="0"/></radialGradient>
+        </defs>
+        <rect width="600" height="320" rx="24" fill="url(#sky)"/>
+        <g class="cloud c1"><ellipse cx="120" cy="60" rx="38" ry="14" fill="#fff"/><ellipse cx="146" cy="52" rx="24" ry="14" fill="#fff"/></g>
+        <g class="cloud c2"><ellipse cx="430" cy="44" rx="34" ry="12" fill="#fff"/><ellipse cx="452" cy="38" rx="20" ry="12" fill="#fff"/></g>
+        <path d="M0 262 Q150 244 300 258 T600 252 V320 H0Z" fill="#CFE3C2"/>
+        <path d="M0 280 Q160 268 300 278 T600 274 V320 H0Z" fill="#B7D6A6"/>
+
+        <!-- the scammer (left), a cartoon figure in a grey hoodie with a mask -->
+        <g class="archer">
+          <ellipse cx="110" cy="268" rx="46" ry="7" fill="#000" opacity=".12"/>
+          <path d="M84 266 l6 -58 h40 l6 58" fill="#4A5568"/>
+          <rect x="86" y="150" width="48" height="66" rx="18" fill="#5B6B82"/>
+          <circle cx="110" cy="128" r="26" fill="#5B6B82"/>
+          <ellipse cx="112" cy="132" rx="17" ry="15" fill="#F2C9A0"/>
+          <rect x="95" y="124" width="34" height="9" rx="4.5" fill="#1F2937"/>
+          <circle cx="104" cy="128" r="2.4" fill="#fff"/><circle cx="120" cy="128" r="2.4" fill="#fff"/>
+          <path d="M106 141 q6 3 12 0" stroke="#7A4A2A" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <g class="bow-arm">
+            <path d="M126 170 L168 164" stroke="#5B6B82" stroke-width="12" stroke-linecap="round"/>
+            <path d="M170 120 Q196 164 170 208" stroke="#8B5A2B" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <path class="string" d="M170 120 L160 164 L170 208" stroke="#334155" stroke-width="1.6" fill="none"/>
+          </g>
+          <text x="110" y="298" text-anchor="middle" class="tag">Scammer</text>
+        </g>
+
+        <!-- the arrow marked SCAM -->
+        <g class="arrow">
+          <path d="M150 164 H228" stroke="#7A4A2A" stroke-width="5" stroke-linecap="round"/>
+          <path d="M226 156 L246 164 L226 172Z" fill="#E5484D"/>
+          <path d="M150 164 l-10 -8 M150 164 l-10 8 M158 164 l-10 -8 M158 164 l-10 8" stroke="#E5484D" stroke-width="3" stroke-linecap="round"/>
+          <rect x="170" y="140" width="44" height="18" rx="5" fill="#E5484D"/>
+          <text x="192" y="153.5" text-anchor="middle" class="scamtxt">SCAM</text>
+        </g>
+
+        <!-- our hero (right) with the Scam Shield -->
+        <g class="hero-kid">
+          <ellipse cx="480" cy="268" rx="46" ry="7" fill="#000" opacity=".12"/>
+          <path d="M462 266 l4 -54 h32 l4 54" fill="#1E3A8A"/>
+          <rect x="456" y="150" width="50" height="68" rx="18" fill="#2F80ED"/>
+          <circle cx="481" cy="128" r="22" fill="#8D5524"/>
+          <path d="M459 124 q2 -22 22 -22 q20 0 22 20 q-10 -10 -22 -8 q-12 -2 -22 10z" fill="#1F1308"/>
+          <circle cx="474" cy="129" r="2.4" fill="#1F1308"/><circle cx="489" cy="129" r="2.4" fill="#1F1308"/>
+          <path d="M474 139 q7 5 14 0" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+          <path d="M506 176 L524 196" stroke="#2F80ED" stroke-width="12" stroke-linecap="round"/>
+        </g>
+        <circle class="glow" cx="420" cy="170" r="90" fill="url(#glow)"/>
+        <g class="shield">
+          <path d="M420 104 L466 120 V164 C466 196 446 220 420 232 C394 220 374 196 374 164 V120Z" fill="#12305A" stroke="#7FD6FF" stroke-width="5"/>
+          <path d="M420 120 L452 131 V164 C452 186 438 204 420 214 C402 204 388 186 388 164 V131Z" fill="#2F80ED"/>
+          <path d="m404 166 11 11 21 -24" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="420" y="250" text-anchor="middle" class="tag shieldtag">SCAM SHIELD</text>
+        </g>
+        <g class="burst">
+          <path d="M366 150 l-22 -10 M366 166 l-26 0 M366 182 l-22 10" stroke="#FDB022" stroke-width="5" stroke-linecap="round"/>
+          <rect x="300" y="92" width="110" height="34" rx="17" fill="#2EAE6B"/>
+          <text x="355" y="115" text-anchor="middle" class="blocked">BLOCKED!</text>
+        </g>
+      </svg>
+      <figcaption>Every scam is an arrow. Knowledge is your shield.</figcaption>
+    </figure>
+  </div>
+
+  <div class="features">
+    <a class="feature" href="#types"><span class="ic blue"><svg><use href="#i-types"/></svg></span><b>Recognise Red Flags</b><small>Learn the common signs of online scams.</small></a>
+    <a class="feature" href="#spot"><span class="ic green"><svg><use href="#i-spot"/></svg></span><b>Practise: Spot It</b><small>Click the suspicious parts of example messages.</small></a>
+    <a class="feature" href="#verify"><span class="ic purple"><svg><use href="#i-verify"/></svg></span><b>Verify a Message</b><small>Compare a message with our examples. Save a report.</small></a>
+    <a class="feature" href="#quiz"><span class="ic red"><svg><use href="#i-quiz"/></svg></span><b>Knowledge Earn</b><small>Take the quiz, earn points and badges.</small></a>
+  </div>
+
+  <h2 class="sec-title"><svg><use href="#i-shield"/></svg>What to do if you suspect a scam</h2>
+  <ol class="steps" id="stepsHome"></ol>
+
+  <div class="two">
+    <div class="card tips"><h3><svg><use href="#i-bulb"/></svg>Quick tips</h3><ul class="ticks" id="tipsHome"></ul></div>
+    <div class="card progress-card">
+      <h3><svg><use href="#i-star"/></svg>My knowledge</h3>
+      <p><b id="pointsHome">0</b> points earned</p>
+      <div class="bar"><span id="barHome"></span></div>
+      <div class="badges" id="badgesHome"></div>
+      <a class="btn small" href="#quiz">Earn more points</a>
+    </div>
+  </div>
+
+  <p class="remember"><svg><use href="#i-bulb"/></svg><span><b>Remember:</b> when in doubt, pause. Scammers create pressure: take a moment to think, check and verify.</span></p>
+</section>
+
+<!-- ================= 2. SCAM TYPES ================= -->
+<section class="page" id="page-types" data-title="Common Scam Types">
+  <div class="page-head"><span class="ic red big"><svg><use href="#i-types"/></svg></span>
+    <div><h1>Common Scam Types</h1><p>Learn the most common scams and how to spot them. All examples are made up.</p></div></div>
+
+  <div class="card dropdown-card">
+    <label for="exampleSelect"><b>See example scam messages:</b></label>
+    <select id="exampleSelect"></select>
+    <div id="exampleBox" class="examples"></div>
+  </div>
+
+  <div class="types-grid" id="typesGrid"></div>
+</section>
+
+<!-- ================= 3. SPOT IT ================= -->
+<section class="page" id="page-spot" data-title="Spot It">
+  <div class="page-head"><span class="ic green big"><svg><use href="#i-spot"/></svg></span>
+    <div><h1>Spot It: find the red flags</h1><p>Click every part of the message you think is suspicious. Then press <b>Check my answer</b>. Careful: one message is safe!</p></div></div>
+  <div class="scorebar card">
+    <div><b id="foundAll">0</b> / <span id="totalAll">0</span><small>red flags found</small></div>
+    <div><b id="falseAll">0</b><small>false alarms</small></div>
+    <div><b id="doneAll">0</b> / <span id="cardsAll">0</span><small>messages checked</small></div>
+    <button class="btn ghost small" id="resetSpot" type="button">Start again</button>
+  </div>
+  <div id="spotList" class="spot-list"></div>
+</section>
+
+<!-- ================= 4. VERIFY ================= -->
+<section class="page" id="page-verify" data-title="Verify a Scam Message">
+  <div class="page-head"><span class="ic purple big"><svg><use href="#i-verify"/></svg></span>
+    <div><h1>Verify a Scam Message</h1><p>Paste a message you are not sure about. We look for common warning signs and compare it with our made-up examples.</p></div></div>
+
+  <div class="two verify">
+    <div class="card">
+      <label for="verifyText"><b>The message</b> <small>(remove names, phone numbers and account numbers first)</small></label>
+      <textarea id="verifyText" rows="7" maxlength="2000" placeholder="Paste or type the message here..."></textarea>
+      <div class="row">
+        <button class="btn" id="verifyBtn" type="button">Check this message</button>
+        <button class="btn ghost" id="sampleBtn" type="button">Try a sample</button>
+      </div>
+      <p class="note">This is an <b>educational tool</b>, not a real scam-detection system. Always check with a trusted adult and the real organisation.</p>
+    </div>
+    <div class="card" id="verifyResult" aria-live="polite">
+      <div class="empty"><svg><use href="#i-verify"/></svg><p>Your result will appear here: the warning signs we found, the closest example, and what to do next.</p></div>
+    </div>
+  </div>
+
+  <div class="card report" id="reportCard" hidden>
+    <h3><svg><use href="#i-flag"/></svg>Report this message</h3>
+    <p class="note">Reports are saved <b>only on this device</b>. Phone numbers, emails and long numbers are hidden before saving. Nothing is sent anywhere.</p>
+    <div class="grid3">
+      <label>Where did you get it?
+        <select id="repWhere"><option>SMS</option><option>WhatsApp or chat app</option><option>Email</option><option>Social media</option><option>Phone call</option><option>Website pop-up</option><option>Other</option></select></label>
+      <label>What kind of scam?
+        <select id="repType"></select></label>
+      <label>Did you click, reply or pay?
+        <select id="repAction"><option>No, I did not</option><option>I clicked a link</option><option>I replied</option><option>I sent money or details</option></select></label>
+    </div>
+    <div id="repAdvice"></div>
+    <button class="btn" id="saveReport" type="button">Save report</button>
+  </div>
+
+  <div class="card">
+    <div class="row space"><h3><svg><use href="#i-flag"/></svg>My reports <small id="repCount"></small></h3>
+      <div class="row"><button class="btn ghost small" id="exportReports" type="button">Download</button><button class="btn ghost small danger" id="clearReports" type="button">Delete all</button></div></div>
+    <ul id="reportList" class="reports"></ul>
+  </div>
+</section>
+
+<!-- ================= 5. Q&A ================= -->
+<section class="page" id="page-ask" data-title="Questions and Answers">
+  <div class="page-head"><span class="ic blue big"><svg><use href="#i-ask"/></svg></span>
+    <div><h1>Questions &amp; Answers</h1><p>Ask anything about scams or about Scam Shield. Answers come from our own guide, on this device.</p></div></div>
+  <div class="card">
+    <label for="askText"><b>Your question</b></label>
+    <textarea id="askText" rows="3" maxlength="300" placeholder="e.g. What should I do if I clicked a scam link?"></textarea>
+    <button class="btn" id="askBtn" type="button">Get answer</button>
+    <div id="answer" aria-live="polite"></div>
+  </div>
+  <h2 class="sec-title small">Popular questions</h2>
+  <div class="chips" id="popular"></div>
+</section>
+
+<!-- ================= 6. QUIZ / KNOWLEDGE EARN ================= -->
+<section class="page" id="page-quiz" data-title="Quick Quiz">
+  <div class="page-head"><span class="ic red big"><svg><use href="#i-quiz"/></svg></span>
+    <div><h1>Quick Quiz &amp; Knowledge Earn</h1><p>10 questions. +10 points for every correct answer. Points unlock badges.</p></div></div>
+  <div class="two quizwrap">
+    <div class="card" id="quizBox"></div>
+    <div class="card progress-card">
+      <h3><svg><use href="#i-star"/></svg>Knowledge earned</h3>
+      <p><b id="pointsQuiz">0</b> points</p>
+      <div class="bar"><span id="barQuiz"></span></div>
+      <div class="badges" id="badgesQuiz"></div>
+      <p class="note">Learning to spot scams is a habit you build over time. Come back and practise often: scammers keep changing their tricks.</p>
+      <button class="btn ghost small danger" id="resetPoints" type="button">Reset my points</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <p><b>Scam Shield</b> is an educational awareness and demonstration tool made by students, not a commercial fraud-detection system. All example messages, names, numbers and links are fictional.</p>
+  <p class="signature">Together we can stop scams!</p>
+</footer>
+
+<!-- ============ BOTTOM BAR (phones) ============ -->
+<nav class="bottomnav" aria-label="Main (bottom)">
+  <a href="#home" data-page="home"><svg><use href="#i-home"/></svg><span>Home</span></a>
+  <a href="#types" data-page="types"><svg><use href="#i-types"/></svg><span>Types</span></a>
+  <a href="#spot" data-page="spot"><svg><use href="#i-spot"/></svg><span>Spot It</span></a>
+  <a href="#verify" data-page="verify"><svg><use href="#i-verify"/></svg><span>Verify</span></a>
+  <a href="#ask" data-page="ask"><svg><use href="#i-ask"/></svg><span>Q&amp;A</span></a>
+  <a href="#quiz" data-page="quiz"><svg><use href="#i-quiz"/></svg><span>Quiz</span></a>
+</nav>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

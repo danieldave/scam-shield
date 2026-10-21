@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" width="240" height="150">
+<rect width="240" height="150" rx="16" fill="#F0F9FF"/>
+<g stroke="#1E293B" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">
+<rect x="62" y="56" width="80" height="58" rx="8" fill="#8B5CF6"/><path d="M88 56 v-10 h28 v10" fill="none"/><path d="M62 78 h80" />
+<rect x="150" y="34" width="52" height="70" rx="6" fill="#fff"/><path d="M160 50h32M160 62h24M160 74h30" stroke="#94A3B8"/>
+<text x="176" y="96" font-family="Arial" font-weight="900" font-size="14" fill="#E5484D" stroke="none" text-anchor="middle">PAY ₦</text></g></svg>

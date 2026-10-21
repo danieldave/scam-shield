@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" width="240" height="150">
+<rect width="240" height="150" rx="16" fill="#F1F5F9"/>
+<g stroke="#1E293B" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">
+<rect x="58" y="24" width="60" height="104" rx="10" fill="#fff"/><path d="M68 44 h40 v20 h-30 l-10 8z" fill="#DCEBFF"/>
+<text x="88" y="58" font-family="Arial" font-weight="800" font-size="10" fill="#1E293B" stroke="none" text-anchor="middle">It's me!</text>
+<path d="M140 60 q30 -28 60 0 q-30 28 -60 0z" fill="#fff"/><circle cx="170" cy="60" r="9" fill="#1E293B"/>
+<path d="M128 98 h84 v24 h-84z" fill="#FDE68A"/><text x="170" y="115" font-family="Arial" font-weight="900" font-size="11" fill="#B45309" stroke="none" text-anchor="middle">NEW NUMBER?</text></g></svg>

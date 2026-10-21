@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" width="240" height="150">
+<rect width="240" height="150" rx="16" fill="#FFF1EC"/>
+<g stroke="#1E293B" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">
+<rect x="56" y="64" width="64" height="58" rx="5" fill="#E5484D"/><rect x="50" y="50" width="76" height="18" rx="4" fill="#F87171"/>
+<path d="M88 50v72" stroke="#FDE68A" stroke-width="8"/><path d="M88 50 c-14 -20 -32 -6 -16 2z M88 50 c14 -20 32 -6 16 2z" fill="#FDB022"/>
+<path d="M138 46 l58 -6 l6 34 l-58 6z" fill="#FDB022"/><text x="170" y="69" font-family="Arial" font-weight="900" font-size="20" fill="#fff" stroke="none" text-anchor="middle" transform="rotate(-6 170 62)">WIN!</text></g></svg>
