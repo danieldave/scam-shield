@@ -27,6 +27,9 @@
     <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
     <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4.5 4.5L19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c1.5-4 4.4-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-report" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 9v5M12 17v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
     <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.3 6.8 19l1-5.8L3.6 9.1l5.8-.8z" fill="currentColor"/></symbol>
   </defs>
 </svg>
@@ -42,10 +45,12 @@
     <a href="#types" data-page="types"><svg><use href="#i-types"/></svg>Scam Types</a>
     <a href="#spot" data-page="spot"><svg><use href="#i-spot"/></svg>Spot It</a>
     <a href="#verify" data-page="verify"><svg><use href="#i-verify"/></svg>Verify</a>
+    <a href="#report" data-page="report"><svg><use href="#i-report"/></svg>Report</a>
     <a href="#ask" data-page="ask"><svg><use href="#i-ask"/></svg>Q&amp;A</a>
     <a href="#quiz" data-page="quiz"><svg><use href="#i-quiz"/></svg>Quiz</a>
   </nav>
   <a class="points" href="#quiz" title="Knowledge earned"><svg><use href="#i-star"/></svg><span id="pointsTop">0</span> pts</a>
+  <button class="login" id="loginBtn" type="button"><svg><use href="#i-user"/></svg><span id="loginLabel">Log in</span></button>
 </header>
 
 <main id="app">
@@ -135,7 +140,8 @@
     <a class="feature" href="#types"><span class="ic blue"><svg><use href="#i-types"/></svg></span><b>Recognise Red Flags</b><small>Learn the common signs of online scams.</small></a>
     <a class="feature" href="#spot"><span class="ic green"><svg><use href="#i-spot"/></svg></span><b>Practise: Spot It</b><small>Click the suspicious parts of example messages.</small></a>
     <a class="feature" href="#verify"><span class="ic purple"><svg><use href="#i-verify"/></svg></span><b>Verify a Message</b><small>Compare a message with our examples. Save a report.</small></a>
-    <a class="feature" href="#quiz"><span class="ic red"><svg><use href="#i-quiz"/></svg></span><b>Knowledge Earn</b><small>Take the quiz, earn points and badges.</small></a>
+    <a class="feature" href="#report"><span class="ic amber"><svg><use href="#i-report"/></svg></span><b>Report Center</b><small>Report a scam message you received.</small></a>
+    <a class="feature" href="#quiz"><span class="ic red"><svg><use href="#i-quiz"/></svg></span><b>Knowledge Earn</b><small>Take the quiz, earn points, stars and badges.</small></a>
   </div>
 
   <h2 class="sec-title"><svg><use href="#i-shield"/></svg>What to do if you suspect a scam</h2>
@@ -147,7 +153,9 @@
       <h3><svg><use href="#i-star"/></svg>My knowledge</h3>
       <p><b id="pointsHome">0</b> points earned</p>
       <div class="bar"><span id="barHome"></span></div>
+      <div class="stars" id="starsHome"></div>
       <div class="badges" id="badgesHome"></div>
+      <div class="award" id="awardHome" hidden></div>
       <a class="btn small" href="#quiz">Earn more points</a>
     </div>
   </div>
@@ -172,7 +180,7 @@
 <!-- ================= 3. SPOT IT ================= -->
 <section class="page" id="page-spot" data-title="Spot It">
   <div class="page-head"><span class="ic green big"><svg><use href="#i-spot"/></svg></span>
-    <div><h1>Spot It: find the red flags</h1><p>Click every part of the message you think is suspicious. Then press <b>Check my answer</b>. Careful: one message is safe!</p></div></div>
+    <div><h1>Spot It: find the red flags</h1><p>Click every part of the message you think is suspicious. Then press <b>Check my answer</b>. Careful: some messages are safe!</p></div></div>
   <div class="scorebar card">
     <div><b id="foundAll">0</b> / <span id="totalAll">0</span><small>red flags found</small></div>
     <div><b id="falseAll">0</b><small>false alarms</small></div>
@@ -214,17 +222,57 @@
         <select id="repAction"><option>No, I did not</option><option>I clicked a link</option><option>I replied</option><option>I sent money or details</option></select></label>
     </div>
     <div id="repAdvice"></div>
-    <button class="btn" id="saveReport" type="button">Save report</button>
+    <div class="row"><button class="btn" id="saveReport" type="button">Save report</button><a class="btn ghost" href="#report">Open the Report Center</a></div>
+  </div>
+</section>
+
+<!-- ================= 5. REPORT CENTER ================= -->
+<section class="page" id="page-report" data-title="Report Center">
+  <div class="page-head"><span class="ic amber big"><svg><use href="#i-report"/></svg></span>
+    <div><h1>Report Center</h1><p>Got a scam message, call or post? Report it here. Your report is saved in your profile on this device, so you, a teacher or a parent can look at it later.</p></div></div>
+
+  <div class="two">
+    <div class="card">
+      <h3><svg><use href="#i-flag"/></svg>Report a scam you received</h3>
+      <div class="grid2">
+        <label>Where did you get it?
+          <select id="rcWhere"><option>SMS</option><option>WhatsApp or chat app</option><option>Email</option><option>Social media</option><option>Phone call</option><option>Website pop-up</option><option>In person</option><option>Other</option></select></label>
+        <label>When did you get it?
+          <input id="rcWhen" type="date"></label>
+        <label>What kind of scam was it?
+          <select id="rcType"></select></label>
+        <label>Did you click, reply or pay?
+          <select id="rcAction"><option>No, I did not</option><option>I clicked a link</option><option>I replied</option><option>I sent money or details</option></select></label>
+      </div>
+      <label for="rcWho">Who did it pretend to be? <small>(optional, e.g. "a bank", "my cousin", "a delivery company")</small></label>
+      <input id="rcWho" type="text" maxlength="80" placeholder="e.g. a bank">
+      <label for="rcText">The message, or what they said <small>(phone numbers and emails are hidden automatically)</small></label>
+      <textarea id="rcText" rows="5" maxlength="2000" placeholder="Paste or type the message here..."></textarea>
+      <div id="rcAdvice"></div>
+      <button class="btn" id="rcSave" type="button">Submit report</button>
+      <p class="note">Reports are saved <b>only on this device</b>. Nothing is sent to the internet.</p>
+    </div>
+    <div class="card help">
+      <h3><svg><use href="#i-shield"/></svg>After you report</h3>
+      <ol class="helpsteps">
+        <li><b>Tell a trusted adult</b>: a parent, guardian or teacher. Show them your report.</li>
+        <li><b>Block and report the sender</b> inside the app where you got it (most apps have a Report or Block button).</li>
+        <li><b>If money or bank details were involved</b>, call your bank on the number on the back of your card, or use its official app, straight away.</li>
+        <li><b>Keep the evidence</b>: take screenshots before you delete anything.</li>
+        <li><b>Change your password</b> if you typed it anywhere, and turn on two-step verification.</li>
+      </ol>
+      <p class="remember small"><svg><use href="#i-bulb"/></svg><span>Being tricked is <b>never</b> your fault. Reporting quickly helps protect you and others.</span></p>
+    </div>
   </div>
 
   <div class="card">
-    <div class="row space"><h3><svg><use href="#i-flag"/></svg>My reports <small id="repCount"></small></h3>
+    <div class="row space"><h3><svg><use href="#i-report"/></svg>My reports <small id="repCount"></small></h3>
       <div class="row"><button class="btn ghost small" id="exportReports" type="button">Download</button><button class="btn ghost small danger" id="clearReports" type="button">Delete all</button></div></div>
     <ul id="reportList" class="reports"></ul>
   </div>
 </section>
 
-<!-- ================= 5. Q&A ================= -->
+<!-- ================= 6. Q&A ================= -->
 <section class="page" id="page-ask" data-title="Questions and Answers">
   <div class="page-head"><span class="ic blue big"><svg><use href="#i-ask"/></svg></span>
     <div><h1>Questions &amp; Answers</h1><p>Ask anything about scams or about Scam Shield. Answers come from our own guide, on this device.</p></div></div>
@@ -238,17 +286,19 @@
   <div class="chips" id="popular"></div>
 </section>
 
-<!-- ================= 6. QUIZ / KNOWLEDGE EARN ================= -->
+<!-- ================= 7. QUIZ / KNOWLEDGE EARN ================= -->
 <section class="page" id="page-quiz" data-title="Quick Quiz">
   <div class="page-head"><span class="ic red big"><svg><use href="#i-quiz"/></svg></span>
-    <div><h1>Quick Quiz &amp; Knowledge Earn</h1><p>10 questions. +10 points for every correct answer. Points unlock badges.</p></div></div>
+    <div><h1>Quick Quiz &amp; Knowledge Earn</h1><p>10 random questions from our bank of <span id="quizCount">50</span>. +10 points for every correct answer. Every 100 points is a star: reach 500 for all 5 stars!</p></div></div>
   <div class="two quizwrap">
     <div class="card" id="quizBox"></div>
     <div class="card progress-card">
       <h3><svg><use href="#i-star"/></svg>Knowledge earned</h3>
       <p><b id="pointsQuiz">0</b> points</p>
       <div class="bar"><span id="barQuiz"></span></div>
+      <div class="stars" id="starsQuiz"></div>
       <div class="badges" id="badgesQuiz"></div>
+      <div class="award" id="awardQuiz" hidden></div>
       <p class="note">Learning to spot scams is a habit you build over time. Come back and practise often: scammers keep changing their tricks.</p>
       <button class="btn ghost small danger" id="resetPoints" type="button">Reset my points</button>
     </div>
@@ -258,9 +308,18 @@
 </main>
 
 <footer class="foot">
-  <p><b>Scam Shield</b> is an educational awareness and demonstration tool made by Yewa College Bytebusters, not a commercial fraud-detection system. All example messages, names, numbers and links are fictional.</p>
+  <p><b>Scam Shield</b> is an educational awareness and demonstration tool made by students, not a commercial fraud-detection system. All example messages, names, numbers and links are fictional.</p>
   <p class="signature">Together we can stop scams!</p>
+  <p class="copyright">&copy; <span id="year">2026</span> All rights reserved &middot; ByteBusters Coding Club, Yewa College, Ilaro</p>
 </footer>
+
+<!-- ============ LOG IN / PROFILE (saved only on this device) ============ -->
+<div class="overlay" id="authBox" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <button class="close" id="authClose" type="button" aria-label="Close"><svg><use href="#i-close"/></svg></button>
+    <div id="authBody"></div>
+  </div>
+</div>
 
 <!-- ============ BOTTOM BAR (phones) ============ -->
 <nav class="bottomnav" aria-label="Main (bottom)">
@@ -268,6 +327,7 @@
   <a href="#types" data-page="types"><svg><use href="#i-types"/></svg><span>Types</span></a>
   <a href="#spot" data-page="spot"><svg><use href="#i-spot"/></svg><span>Spot It</span></a>
   <a href="#verify" data-page="verify"><svg><use href="#i-verify"/></svg><span>Verify</span></a>
+  <a href="#report" data-page="report"><svg><use href="#i-report"/></svg><span>Report</span></a>
   <a href="#ask" data-page="ask"><svg><use href="#i-ask"/></svg><span>Q&amp;A</span></a>
   <a href="#quiz" data-page="quiz"><svg><use href="#i-quiz"/></svg><span>Quiz</span></a>
 </nav>
