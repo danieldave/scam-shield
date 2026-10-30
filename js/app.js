@@ -41,11 +41,13 @@ function toast(text) {
 // ---------- PART 2: pages ----------
 const PAGES = ["home", "types", "spot", "verify", "report", "ask", "quiz"];
 function showPage() {
-  const id = PAGES.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home";
+  const asked = location.hash.slice(1);
+  const id = PAGES.includes(asked) ? asked : "home";
   $$(".page").forEach(p => p.classList.toggle("on", p.id === "page-" + id));
   $$("[data-page]").forEach(a => a.classList.toggle("on", a.dataset.page === id));
   document.title = $("#page-" + id).dataset.title + " · Scam Shield";
   window.scrollTo(0, 0);
+  if (asked === "qr") setTimeout(() => $("#qr").scrollIntoView({ behavior: "smooth", block: "center" }), 60);   // the QR code button
 }
 window.addEventListener("hashchange", showPage);
 

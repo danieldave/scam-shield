@@ -33,6 +33,22 @@ button { font: inherit; }
 .points.pop { animation: pop .5s; }
 @keyframes pop { 50% { transform: scale(1.25); } }
 
+.qrbtn { display: flex; align-items: center; gap: 6px; background: var(--amber); color: var(--navy); text-decoration: none;
+  font-weight: 800; font-size: 14px; padding: 7px 12px; border-radius: 99px; white-space: nowrap; }
+.qrbtn svg { font-size: 17px; }
+.qrbtn:hover { background: #FFE08A; }
+.topnav a { white-space: nowrap; }
+@media (max-width: 860px) { .topbar { gap: 8px; } .topnav a { padding: 8px 6px; } .brand small { display: none; } .qrbtn span { display: none; } .qrbtn { padding: 8px 10px; } }
+
+/* ---------- QR code on the home page ---------- */
+.qrcard { display: flex; align-items: center; gap: 28px; margin-top: 40px; padding: 24px; background: var(--card); border-radius: var(--radius);
+  border: 3px solid var(--blue); box-shadow: var(--shadow); scroll-margin-top: 90px; }
+.qrcard img { width: 230px; height: 230px; flex: none; background: #fff; border-radius: 14px; padding: 6px; border: 1px solid var(--line); }
+.qrcard h2 { font-size: clamp(22px, 3vw, 30px); color: var(--navy); margin: 4px 0 8px; }
+.qrcard p { color: var(--muted); margin: 0 0 16px; }
+.qrtag { display: inline-flex; align-items: center; gap: 6px; background: var(--sky); color: var(--navy2) !important; font-weight: 800; font-size: 13px;
+  letter-spacing: .05em; text-transform: uppercase; padding: 5px 12px; border-radius: 99px; }
+
 /* ---------- bottom bar (phones) ---------- */
 .bottomnav { display: none; }
 
@@ -263,6 +279,8 @@ mark { background: #FFD3D5; color: inherit; border-radius: 4px; padding: 0 2px; 
   .features { grid-template-columns: repeat(2, 1fr); }
   .bottomnav a { font-size: 10px; }
   .login span#loginLabel { display: none; }
+  .qrcard { flex-direction: column; text-align: center; padding: 20px; }
+  .qrcard img { width: 210px; height: 210px; }
   .scene { order: -1; }
   .steps { grid-template-columns: 1fr 1fr; }
   .scorebar { position: static; gap: 8px; } .scorebar > div { min-width: 0; flex: 1 1 28%; padding: 6px 4px; } .scorebar b { font-size: 18px; }
