@@ -1,0 +1,26 @@
+# Scam Shield
+
+> Scam Shield is a free, student-built digital-safety website from the ByteBusters Coding Club, Yewa College, Ilaro (Odu'a Investment Foundation), Ogun State, Nigeria. It teaches young people aged 9-17 to recognise online scams, practise on made-up example messages, check a suspicious message (offline red-flag checker plus an optional AI second opinion), report scams and take a quiz.
+
+Key facts:
+- Real banks never ask for a PIN, OTP, password or BVN by SMS, call or chat.
+- A real prize, job or scholarship never asks you to pay a fee first.
+- When unsure: stop, don't share, verify using a contact you already trust, tell a trusted adult.
+- All example messages on the site are fictional; links end in ".example".
+- Scam Shield is an educational tool, not a commercial fraud-detection system.
+
+## Scam guides
+- [Phishing Scams](https://scam-shield.vercel.app/scams/phishing/): A phishing scam is a fake SMS, email or chat message that pretends to come from your bank, school or an app, so you click a link or share your password, PIN or OTP. Real banks in Nigeria never ask for your PIN or OTP by message or phone call.
+- [Fake Prizes & Giveaways](https://scam-shield.vercel.app/scams/prize/): A fake prize scam tells you that you have won money, data or a gift in a promo you never entered, then asks you to pay a 'processing fee' or share your details to collect it. A real prize never asks you to pay first.
+- [Romance Scams](https://scam-shield.vercel.app/scams/romance/): A romance scam is when someone online pretends to love you or be your close friend, builds trust quickly, and then asks for money, gifts, card photos or private pictures. They usually refuse video calls and always have a sudden emergency.
+- [Online Shopping Scams](https://scam-shield.vercel.app/scams/shopping/): An online shopping scam is a fake seller who offers items at a very low price, asks you to pay into a personal account first, and then never delivers. Real sellers usually allow pay-on-delivery, have reviews and give a real address.
+- [Tech Support Scams](https://scam-shield.vercel.app/scams/tech/): A tech support scam is a scary pop-up, call or message that says your phone or computer has a virus or an expired licence, then asks you to call a number, install an app or pay to 'fix' it. Real companies do not contact you this way.
+- [Investment Scams](https://scam-shield.vercel.app/scams/invest/): An investment scam promises to double your money quickly with 'guaranteed' profit and 'no risk', then asks you to invite friends before you can withdraw. Real investments can lose money, and no honest scheme guarantees fast doubling.
+- [Fake Job Offers](https://scam-shield.vercel.app/scams/job/): A fake job offer promises big pay for easy work, skips proper interviews, and asks you to pay a 'registration', 'training' or 'processing' fee before you start. A real employer pays you; they never ask you to pay them to get the job.
+- [Impersonation Scams](https://scam-shield.vercel.app/scams/impersonate/): An impersonation scam is when someone pretends to be a friend, family member, teacher or official, often from a new number, and asks for urgent money or secrets. The fix is simple: contact the real person using a number you already have.
+
+## Help
+- [Scam questions and answers](https://scam-shield.vercel.app/faq/): 24 short answers for students
+- [Check a message](https://scam-shield.vercel.app/#verify): paste a suspicious message to see its warning signs
+- [Practise: Spot It](https://scam-shield.vercel.app/#spot): click the red flags in made-up messages
+- [Quiz](https://scam-shield.vercel.app/#quiz): 10 random questions from a bank of 55

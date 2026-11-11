@@ -1,0 +1,13 @@
+{
+  "name": "scam-shield",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Scam Shield: student-built digital-safety website with an offline scam checker, AI second opinion and SEO/AEO/GEO guide pages.",
+  "scripts": {
+    "build:pages": "node tools/build.js",
+    "test": "node tools/test.js",
+    "dev": "node tools/dev.js",
+    "dev:mock": "MOCK=1 node tools/dev.js"
+  },
+  "engines": { "node": ">=18" }
+}

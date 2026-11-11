@@ -1,13 +1,28 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-NG">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Scam Shield: Think · Spot · Stay Safe</title>
-<meta name="description" content="An educational digital-safety awareness platform. Learn common scam signs, practise on made-up examples, check a suspicious message and take the quiz. Works offline.">
+<title>Scam Shield: Free Scam Checker &amp; Lessons for Students in Nigeria</title>
+<meta name="description" content="Free scam checker and lessons for students in Nigeria. Learn the signs of phishing, fake prizes and fake jobs, then check a suspicious SMS.">
+<link rel="canonical" href="https://scam-shield.vercel.app/">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <meta name="theme-color" content="#12305A">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Scam Shield">
+<meta property="og:title" content="Scam Shield: Think · Spot · Stay Safe">
+<meta property="og:description" content="Learn the tricks scammers use, practise spotting red flags and check a suspicious message. Made by ByteBusters students in Ogun State, Nigeria.">
+<meta property="og:url" content="https://scam-shield.vercel.app/">
+<meta property="og:image" content="https://scam-shield.vercel.app/images/og-image.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_NG">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="images/logo.svg">
+<link rel="apple-touch-icon" href="images/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="alternate" type="text/plain" href="llms.txt" title="Summary for AI assistants">
 <link rel="stylesheet" href="css/style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://scam-shield.vercel.app/#site", "name": "Scam Shield", "url": "https://scam-shield.vercel.app/", "inLanguage": "en-NG", "publisher": {"@id": "https://scam-shield.vercel.app/#org"}}, {"@type": "EducationalOrganization", "@id": "https://scam-shield.vercel.app/#org", "name": "ByteBusters Coding Club, Yewa College, Ilaro", "url": "https://scam-shield.vercel.app/", "logo": "https://scam-shield.vercel.app/images/logo.svg", "address": {"@type": "PostalAddress", "addressLocality": "Ilaro", "addressRegion": "Ogun State", "addressCountry": "NG"}, "parentOrganization": {"@type": "Organization", "name": "Odu'a Investment Foundation"}}, {"@type": "WebApplication", "name": "Scam Shield", "url": "https://scam-shield.vercel.app/", "applicationCategory": "EducationalApplication", "operatingSystem": "Any (web browser)", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "NGN"}, "inLanguage": "en-NG", "audience": {"@type": "EducationalAudience", "educationalRole": "student"}, "description": "Free digital-safety website for students in Nigeria: learn scam warning signs, practise spotting red flags, check a suspicious message with an offline checker and an AI second opinion, report scams and take a quiz.", "featureList": ["Scam type guides", "Spot It red-flag practice", "Offline message checker", "AI second opinion", "Google Safe Browsing link check", "Report Center", "Quiz with points and badges"], "publisher": {"@id": "https://scam-shield.vercel.app/#org"}}]}</script>
 </head>
 <body>
 
@@ -49,6 +64,7 @@
     <a href="#report" data-page="report"><svg><use href="#i-report"/></svg>Report</a>
     <a href="#ask" data-page="ask"><svg><use href="#i-ask"/></svg>Q&amp;A</a>
     <a href="#quiz" data-page="quiz"><svg><use href="#i-quiz"/></svg>Quiz</a>
+    <a href="scams/"><svg><use href="#i-bulb"/></svg>Guides</a>
   </nav>
   <a class="qrbtn" href="#qr" title="Show the QR code"><svg><use href="#i-qr"/></svg><span>QR</span></a>
   <a class="points" href="#quiz" title="Knowledge earned"><svg><use href="#i-star"/></svg><span id="pointsTop">0</span> pts</a>
@@ -216,7 +232,7 @@
         <button class="btn" id="verifyBtn" type="button">Check this message</button>
         <button class="btn ghost" id="sampleBtn" type="button">Try a sample</button>
       </div>
-      <p class="note">This is an <b>educational tool</b>, not a real scam-detection system. Always check with a trusted adult and the real organisation.</p>
+      <p class="note">You get two checks: our <b>offline checker</b> (works without internet) and, when you are online, an <b>AI second opinion</b>. Phone numbers and emails are hidden first. This is an <b>educational tool</b>: always check with a trusted adult and the real organisation.</p>
     </div>
     <div class="card" id="verifyResult" aria-live="polite">
       <div class="empty"><svg><use href="#i-verify"/></svg><p>Your result will appear here: the warning signs we found, the closest example, and what to do next.</p></div>
@@ -225,7 +241,7 @@
 
   <div class="card report" id="reportCard" hidden>
     <h3><svg><use href="#i-flag"/></svg>Report this message</h3>
-    <p class="note">Reports are saved <b>only on this device</b>. Phone numbers, emails and long numbers are hidden before saving. Nothing is sent anywhere.</p>
+    <p class="note">Reports are saved <b>only on this device</b>. Phone numbers, emails and long numbers are hidden before saving. Reports are never sent anywhere.</p>
     <div class="grid3">
       <label>Where did you get it?
         <select id="repWhere"><option>SMS</option><option>WhatsApp or chat app</option><option>Email</option><option>Social media</option><option>Phone call</option><option>Website pop-up</option><option>Other</option></select></label>
@@ -288,7 +304,7 @@
 <!-- ================= 6. Q&A ================= -->
 <section class="page" id="page-ask" data-title="Questions and Answers">
   <div class="page-head"><span class="ic blue big"><svg><use href="#i-ask"/></svg></span>
-    <div><h1>Questions &amp; Answers</h1><p>Ask anything about scams or about Scam Shield. Answers come from our own guide, on this device.</p></div></div>
+    <div><h1>Questions &amp; Answers</h1><p>Ask anything about scams or about Scam Shield. Answers come from our own guide first. If our guide has no answer and you are online, the AI tutor helps.</p></div></div>
   <div class="card">
     <label for="askText"><b>Your question</b></label>
     <textarea id="askText" rows="3" maxlength="300" placeholder="e.g. What should I do if I clicked a scam link?"></textarea>
@@ -321,6 +337,12 @@
 </main>
 
 <footer class="foot">
+  <nav class="foot-guides" aria-label="Scam guides">
+    <b>Scam guides:</b>
+    <a href="scams/phishing/">Phishing</a> · <a href="scams/prize/">Fake prizes</a> · <a href="scams/romance/">Romance</a> ·
+    <a href="scams/shopping/">Online shopping</a> · <a href="scams/tech/">Tech support</a> · <a href="scams/invest/">Investment</a> ·
+    <a href="scams/job/">Fake jobs</a> · <a href="scams/impersonate/">Impersonation</a> · <a href="faq/">All questions &amp; answers</a>
+  </nav>
   <p><b>Scam Shield</b> is an educational awareness and demonstration tool made by students, not a commercial fraud-detection system. All example messages, names, numbers and links are fictional.</p>
   <p class="signature">Together we can stop scams!</p>
   <p class="copyright">&copy; <span id="year">2026</span> All rights reserved &middot; ByteBusters Coding Club, Yewa College, Ilaro</p>
@@ -347,6 +369,7 @@
 
 <div class="toast" id="toast" role="status"></div>
 
+<script src="js/config.js"></script>
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
 </body>

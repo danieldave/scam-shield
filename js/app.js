@@ -110,6 +110,7 @@ $("#typesGrid").innerHTML = SCAM_TYPES.map(t => `
     <div class="in"><h3>${esc(t.title)}</h3><p>${esc(t.short)}</p>
       <ul>${t.flags.map(f => `<li>${esc(f)}</li>`).join("")}</ul>
       <details><summary>Show an example</summary><div class="msg"><small>Made-up example</small>${esc(t.examples[0])}</div></details>
+      <a class="guide-link" href="scams/${t.id}/">Read the full guide: how to spot it and what to do →</a>
     </div></article>`).join("");
 const sel = $("#exampleSelect");
 sel.innerHTML = SCAM_TYPES.map(t => `<option value="${t.id}">${esc(t.title)}</option>`).join("");
@@ -240,13 +241,75 @@ function verify() {
       : "<li><b>No common red flags found.</b><br><small>That does not prove it is safe. Still check who sent it.</small></li>"}</ul>
     <div class="highlight">${highlight(text, found)}</div>
     <div class="compare"><b>Closest made-up example (${simPct}% similar):</b> ${esc(best.type)}<br><i>"${esc(best.text)}"</i></div>
-    <p class="note">Result from our learning tool. It can miss scams and can be wrong. When in doubt: stop, don't share, verify with a trusted adult.</p>`;
+    <p class="note">Result from our learning tool. It can miss scams and can be wrong. When in doubt: stop, don't share, verify with a trusted adult.</p>
+    <div id="aiBox" aria-live="polite"></div>`;
   requestAnimationFrame(() => setTimeout(() => { $(".meter i", box).style.left = pos + "%"; }, 30));
   lastCheck = { text, level, flags: found.map(f => f.flag.label), type: found.length ? guessType(found, best) : "Not sure" };
   $("#reportCard").hidden = false;
   $("#repType").value = lastCheck.type;
   drawAdvice();
   if (window.innerWidth < 720) box.scrollIntoView({ behavior: "smooth", block: "start" });
+  aiSecondOpinion(text, level);
+}
+
+// ---------- PART 6b: the AI second opinion (online only) ----------
+// The offline result above is ALWAYS shown first. The AI only adds to it.
+// If there is no internet, no key, or the helper is busy, we say so kindly and carry on.
+const AI = (window.SS_CONFIG && window.SS_CONFIG.ai) || { enabled: false };
+async function callAI(endpoint, payload) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), AI.timeoutMs || 25000);
+  try {
+    const r = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload), signal: ctrl.signal });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(data.error || "The AI helper is not available right now.");
+    return data;
+  } finally { clearTimeout(timer); }
+}
+const VERDICT = {
+  likely_scam: { cls: "high", text: "AI says: LIKELY A SCAM" },
+  suspicious: { cls: "medium", text: "AI says: SUSPICIOUS, be careful" },
+  looks_safe: { cls: "low", text: "AI says: LOOKS SAFE" }
+};
+const LEVEL_FOR = { likely_scam: "high", suspicious: "medium", looks_safe: "low" };
+let aiTicket = 0;
+async function aiSecondOpinion(text, offlineLevel) {
+  const box = $("#aiBox"); if (!box) return;
+  if (!AI.enabled) return;
+  if (!navigator.onLine) { box.innerHTML = `<div class="ai off">${icon("shield")}<p><b>AI helper:</b> you are offline, so only the offline result is shown. That is fine: the red flags above still count.</p></div>`; return; }
+  const ticket = ++aiTicket;                              // if the student checks again quickly, ignore the old answer
+  box.innerHTML = `<div class="ai wait"><span class="spin"></span><p><b>Asking the AI helper for a second opinion…</b><br><small>Phone numbers and emails were hidden before sending.</small></p></div>`;
+  try {
+    const a = await callAI(AI.checkEndpoint, { text });
+    if (ticket !== aiTicket) return;
+    const v = VERDICT[a.verdict] || VERDICT.suspicious;
+    const agree = LEVEL_FOR[a.verdict] === offlineLevel;
+    const links = a.links || {};
+    let html = esc(text);
+    (a.flags || []).map(f => f.quote).sort((x, y) => y.length - x.length).forEach(q => {
+      const re = new RegExp("(" + esc(q).replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "i");
+      html = html.replace(re, "\u0001$1\u0002");
+    });
+    html = html.replace(/\u0001/g, "<mark>").replace(/\u0002/g, "</mark>");
+    box.innerHTML = `<div class="ai">
+      <h4>${icon("bulb")}AI second opinion</h4>
+      <div class="risk ${v.cls}">${v.text} <small>(${a.confidence}% sure)</small></div>
+      <p class="agree ${agree ? "yes" : "no"}">${agree ? "The AI agrees with our offline checker." : "The AI and the offline checker do not fully agree. When two checks disagree, be extra careful and ask a trusted adult."}</p>
+      <p>${esc(a.explain)}</p>
+      ${a.flags && a.flags.length ? `<ul class="flags">${a.flags.map(f => `<li><b>"${esc(f.quote)}"</b><br><small>${esc(f.why)}</small></li>`).join("")}</ul>
+      <div class="highlight">${html}</div>` : ""}
+      ${links.checked ? `<p class="linkcheck ${links.dangerous.length ? "bad" : "ok"}">${icon(links.dangerous.length ? "stop" : "check")}${links.dangerous.length
+        ? `<b>Google Safe Browsing lists ${links.dangerous.length} link(s) in this message as dangerous.</b> Do not open them.`
+        : `Google Safe Browsing checked ${links.links.length} link(s) and has no warning. New scam links are not always listed yet, so still be careful.`}</p>` : ""}
+      ${a.steps && a.steps.length ? `<p><b>What to do now:</b></p><ol class="aisteps">${a.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol>` : ""}
+      <p class="note">AI can make mistakes too. Type of scam it thinks: <b>${esc(a.type)}</b>.</p>
+    </div>`;
+    if (a.verdict && lastCheck) { lastCheck.ai = a.verdict; }
+    addPoints(1);
+  } catch (e) {
+    if (ticket !== aiTicket) return;
+    box.innerHTML = `<div class="ai off">${icon("shield")}<p><b>AI helper:</b> ${esc(e.name === "AbortError" ? "it took too long to answer." : e.message)} Use the offline result above.</p></div>`;
+  }
 }
 function guessType(found, best) {
   const ids = found.map(f => f.flag.id);
@@ -329,7 +392,15 @@ function ask(question) {
   if (question.trim().length < 3) { out.innerHTML = `<div class="answer"><p>Please type a question first.</p></div>`; return; }
   const list = bestAnswers(question);
   if (!list.length) {
-    out.innerHTML = `<div class="answer"><h4>I don't have an answer for that yet.</h4><p>Try asking about phishing, OTPs, links, fake jobs, online shopping, what to do after clicking a link, or how Scam Shield works. You can also ask a trusted adult or a teacher.</p></div>`;
+    const noAnswer = `<div class="answer"><h4>I don't have an answer for that yet.</h4><p>Try asking about phishing, OTPs, links, fake jobs, online shopping, what to do after clicking a link, or how Scam Shield works. You can also ask a trusted adult or a teacher.</p></div>`;
+    if (!AI.enabled || !navigator.onLine) { out.innerHTML = noAnswer; return; }
+    // Our own guide has no answer: ask the AI tutor
+    out.innerHTML = `<div class="ai wait"><span class="spin"></span><p><b>Our guide has no answer yet, so we are asking the AI tutor…</b></p></div>`;
+    callAI(AI.askEndpoint, { question }).then(a => {
+      out.innerHTML = `<div class="answer ai-answer"><small class="tag-ai">${icon("bulb")}Answer from the AI tutor</small><h4>${esc(question)}</h4><p>${esc(a.answer)}</p>
+        <p class="note">AI can make mistakes. Check important things with a trusted adult.</p></div>` +
+        (a.followups && a.followups.length ? `<div class="related"><small>You could also ask</small><div class="chips">${a.followups.map(q => `<button class="chip" type="button">${esc(q)}</button>`).join("")}</div></div>` : "");
+    }).catch(() => { out.innerHTML = noAnswer; });
     return;
   }
   const top = list[0].item;

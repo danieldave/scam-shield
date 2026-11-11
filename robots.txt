@@ -1,0 +1,23 @@
+# Scam Shield: everyone may read our guides, including AI search tools,
+# because the goal is to help as many people as possible stay safe.
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# AI search and answer engines (GEO): welcome
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://scam-shield.vercel.app/sitemap.xml
