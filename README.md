@@ -25,7 +25,7 @@ It teaches students aged 9-17 to spot online scams, practise on made-up messages
    - `SAFE_BROWSING_KEY`: optional, a free Google Safe Browsing API key
    - `OPENAI_MODEL`: optional, default `gpt-4o-mini`
 3. Press **Redeploy**.
-4. If Vercel gives the site a different address than `https://scam-shield.vercel.app`, put the real address in `tools/site.json`, run `node tools/build.js` and push again.
+4. If Vercel gives the site a different address than `https://scam-shield-blond.vercel.app`, put the real address in `tools/site.json`, run `node tools/build.js` and push again.
 5. Submit `https://<your-address>/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
 
 > Never paste an API key into any file. Keys live only in Vercel's Environment Variables.

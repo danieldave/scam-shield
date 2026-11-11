@@ -171,6 +171,17 @@ const SPOT_EXAMPLES = [
     { t: " " },
     { t: "Send your account number and the code we just sent you", why: "The 'code' is your bank OTP. Sending it lets them empty your account." },
     { t: " to claim." }] },
+  { from: "WhatsApp status shared in a group", type: "Fake grant", scam: true, parts: [
+    { t: "FG ₦50,000 Cash Transfer ongoing, " },
+    { t: "No BVN required!", why: "They say 'no BVN' to make it look harmless. The fake page will ask for your details later." },
+    { t: " " },
+    { t: "The Federal Government is giving out ₦50,000 to all Nigerians,", why: "Pretends to be the government. Real government payments are announced on official .gov.ng websites, not WhatsApp status." },
+    { t: " " },
+    { t: "I just got mine.", why: "Fake proof. Scammers pretend a friend already received money so you trust it." },
+    { t: " Get yours here now: " },
+    { t: "fg-cash-grant.example", why: "A strange link that is not a .gov.ng website. It steals your details or bank login." },
+    { t: " " },
+    { t: "SHARE WITH EVERYONE", why: "A chain message. Scammers use you to spread the trap to your family and friends." }] },
   { from: "WhatsApp from: Tobi (saved contact)", type: "Safe message", scam: false, parts: [
     { t: "Hi, it's Tobi. " },
     { t: "I'll be late for football practice today," },
@@ -180,26 +191,34 @@ const SPOT_EXAMPLES = [
 
 // ---------- 3. VERIFY: red-flag rules for the message checker ----------
 const RED_FLAGS = [
-  { id: "secret", label: "Asks for PIN, password, OTP or codes", weight: 3,
-    words: ["pin", "otp", "password", "passcode", "one-time", "one time", "cvv", "bvn", "nin", "verification code", "security code", "login details", "card details", "card number"] },
-  { id: "pay", label: "Asks you to pay or send money", weight: 3,
-    words: ["pay", "fee", "send money", "transfer", "processing", "registration", "deposit", "gift card", "recharge card", "airtime", "send ₦", "account number"] },
+  // needsAsk: true  ->  only counts when the same sentence ASKS for it ("enter your PIN"), never for "No BVN required"
+  { id: "secret", label: "Asks for PIN, password, OTP or codes", weight: 3, needsAsk: true,
+    words: ["pin", "otp", "password", "passcode", "one-time", "one time", "cvv", "bvn", "nin", "verification code", "security code", "login details", "card details", "card number", "account number", "login", "bank card", "card photo", "photo of your card", "picture of your card"] },
+  { id: "pay", label: "Asks you to pay or send money", weight: 3, needsAsk: true,
+    words: ["pay", "fee", "send money", "transfer to", "transfer the", "make a transfer", "processing", "registration", "deposit", "gift card", "recharge card", "send airtime", "buy airtime", "send ₦", "pay ₦"] },
   { id: "urgent", label: "Rushes you with a deadline or a threat", weight: 2,
-    words: ["urgent", "immediately", "now", "today", "within 24", "within 48", "hours", "minutes", "blocked", "suspended", "deactivated", "expire", "last chance", "final warning", "act fast", "hurry"] },
+    words: ["urgent", "immediately", "now", "today", "within 24", "within 48", "hours", "minutes", "blocked", "suspended", "deactivated", "expire", "last chance", "final warning", "act fast", "hurry", "ongoing", "ongoning", "limited slots", "few slots", "hour", "will be deleted", "will be closed"] },
   { id: "prize", label: "Prize, win or something free", weight: 2,
     words: ["congratulations", "won", "winner", "prize", "giveaway", "free", "reward", "lottery", "promo", "bonus", "claim"] },
+  { id: "freemoney", label: "Free money from 'government' or a big company", weight: 3,
+    words: ["giving out", "cash transfer", "cash grant", "grant", "palliative", "empowerment", "relief fund", "free money", "all nigerians", "every nigerian", "get yours", "claim yours", "apply here", "i just got mine", "i got mine", "i have received mine"] },
+  { id: "fakealert", label: "Says money was 'sent': check your OWN bank app", weight: 3,
+    words: ["i have sent", "i've sent", "i sent you", "see the screenshot", "check the screenshot", "release the goods", "will reflect", "sent by mistake", "sent you by mistake", "wrongly sent", "send it back", "refund the", "pending alert"] },
+  { id: "chain", label: "Asks you to share or forward it to others", weight: 2,
+    words: ["share with everyone", "share with all", "share this", "share to", "forward this", "forward to", "send to 10", "send to 20", "share with your friends", "share with your contacts", "share in groups"] },
   { id: "toogood", label: "Too good to be true (big money, no risk)", weight: 2,
-    words: ["guaranteed", "double", "no risk", "100%", "earn ₦", "daily", "weekly profit", "returns", "invest", "rich", "passive income"] },
+    words: ["guaranteed", "double", "no risk", "100%", "earn ₦", "daily", "weekly profit", "returns", "invest", "rich", "passive income", "instant loan", "no collateral", "no documents"] },
   { id: "link", label: "Contains a link to click", weight: 2,
-    words: ["http", "www.", "click", ".com", ".ng", ".net", ".link", ".xyz", ".example", "bit.ly", "tap here", "link"] },
+    words: ["http", "www.", "click", ".com", ".ng", ".net", ".link", ".xyz", ".online", ".site", ".top", ".shop", ".info", ".click", ".live", ".example", "bit.ly", "tinyurl", "tap here", "link"] },
   { id: "secrecy", label: "Asks you to keep it secret", weight: 2,
     words: ["don't tell", "do not tell", "keep it secret", "between us", "confidential", "no one should know"] },
   { id: "identity", label: "'It's me', new number, or pretends to be an official", weight: 2,
-    words: ["new number", "changed my number", "it's me", "it is me", "official", "head office", "customer care", "agent", "exam office", "police"] },
+    words: ["new number", "changed my number", "it's me", "it is me", "official", "head office", "customer care", "agent", "exam office", "police",
+      "federal government", "fg ", "government of nigeria", "minister", "ministry", "cbn", "central bank", "efcc", "presidency", "governor", "admin support", "support team", "admin team"] },
   { id: "control", label: "Wants to install an app or control your device", weight: 3,
     words: ["install", "download", "remote", "anydesk", "screen share", "control your", "apk"] },
   { id: "love", label: "Love or friendship that quickly turns to money", weight: 2,
-    words: ["my dear", "hello dear", "my love", "sweetheart", "my heart", "customs", "stuck", "gift box", "abroad"] }
+    words: ["my dear", "hello dear", "my love", "sweetheart", "my heart", "customs", "stuck", "gift box", "abroad", "cannot video call", "can't video call", "camera is broken", "no video call"] }
 ];
 
 // ---------- 4. QUICK TIPS and WHAT TO DO ----------

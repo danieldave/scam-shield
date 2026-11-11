@@ -13,11 +13,11 @@ let passed = 0;
 const ok = (name, fn) => Promise.resolve().then(fn).then(() => { passed++; console.log('  ✓', name); });
 
 // A fake request and response, like Vercel gives us
-function call(handler, { method = 'POST', body = {}, origin = 'https://scam-shield.vercel.app', ip = '1.1.1.1' } = {}) {
+function call(handler, { method = 'POST', body = {}, origin = 'https://scam-shield-blond.vercel.app', ip = '1.1.1.1' } = {}) {
   return new Promise(resolve => {
     const res = { headers: {}, code: 200, setHeader(k, v) { this.headers[k] = v; },
       status(c) { this.code = c; return this; }, json(d) { resolve({ code: this.code, data: d, headers: this.headers }); }, end() { resolve({ code: this.code }); } };
-    handler({ method, body, headers: { origin, host: 'scam-shield.vercel.app', 'x-forwarded-for': ip } }, res);
+    handler({ method, body, headers: { origin, host: 'scam-shield-blond.vercel.app', 'x-forwarded-for': ip } }, res);
   });
 }
 
@@ -80,6 +80,30 @@ global.fetch = async (url) => {
     assert.strictEqual(r.code, 200); assert.ok(r.data.answer.length > 0);
   });
 
+  console.log('Offline checker (js/checker.js)');
+  const vm = require('vm'); const ctx = {}; vm.createContext(ctx);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8') + ';globalThis.D={SCAM_TYPES,SPOT_EXAMPLES,RED_FLAGS};', ctx);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/checker.js'), 'utf8'), ctx);
+  const flags = t => ctx.ScamChecker.findFlags(t, ctx.D.RED_FLAGS);
+  const level = t => { const r = flags(t).reduce((n, f) => n + f.flag.weight, 0); return r >= 6 ? 'high' : r >= 3 ? 'medium' : 'low'; };
+  const ids = t => flags(t).map(f => f.flag.id);
+  const FG = 'FG N50,000 Naira Cash Transfer Ongoning, No BVN Required\n\nThe Federal Government Of Nigeria through The Minister of Humanitarian Affairs is Giving out N50,000 Cash Transfer to All Nigerians, i just got mine.\n\nGet Yours Here Now\nhttps://fg-cash.example/fg50k\n\nSHARE WITH EVERYONE';
+  await ok('"No BVN required" is NOT read as asking for a BVN', () => assert.ok(!ids(FG).includes('secret')));
+  await ok('"Cash transfer to all Nigerians" is NOT read as asking you to pay', () => assert.ok(!ids(FG).includes('pay')));
+  await ok('fake government cash message is HIGH with the right red flags', () => {
+    assert.strictEqual(level(FG), 'high');
+    ['freemoney', 'chain', 'identity', 'link', 'urgent'].forEach(id => assert.ok(ids(FG).includes(id), id));
+  });
+  await ok('"We will never ask for your PIN" is a warning, not a request', () => assert.ok(!ids('We will never ask for your PIN or OTP.').includes('secret')));
+  await ok('"Enter your PIN and OTP" IS a request', () => assert.ok(ids('Enter your PIN and OTP at kudi.example now.').includes('secret')));
+  await ok('every made-up scam example is MEDIUM or HIGH', () => {
+    const all = [].concat(...ctx.D.SCAM_TYPES.map(t => t.examples), ctx.D.SPOT_EXAMPLES.filter(e => e.scam).map(e => e.parts.map(p => p.t).join('')));
+    all.forEach(t => assert.notStrictEqual(level(t), 'low', 'missed: ' + t.slice(0, 60)));
+  });
+  await ok('every safe example is LOW', () => {
+    ctx.D.SPOT_EXAMPLES.filter(e => !e.scam).forEach(e => { const t = e.parts.map(p => p.t).join(''); assert.strictEqual(level(t), 'low', 'false alarm: ' + t.slice(0, 60)); });
+  });
+
   console.log('SEO / AEO / GEO pages');
   const htmls = ['index.html', 'faq/index.html', 'scams/index.html', ...fs.readdirSync(path.join(ROOT, 'scams')).filter(d => !d.includes('.')).map(d => `scams/${d}/index.html`)];
   for (const f of htmls) {
@@ -102,7 +126,7 @@ global.fetch = async (url) => {
     assert.strictEqual((sm.match(/<url>/g) || []).length, htmls.length);
   });
   await ok('no API key is written in any website file', () => {
-    const files = ['index.html', 'js/app.js', 'js/config.js', 'js/data.js'];
+    const files = ['index.html', 'js/app.js', 'js/config.js', 'js/data.js', 'js/checker.js'];
     files.forEach(f => assert.ok(!/sk-[A-Za-z0-9_-]{20,}/.test(fs.readFileSync(path.join(ROOT, f), 'utf8')), f));
   });
 

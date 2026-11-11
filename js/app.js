@@ -195,13 +195,7 @@ function hidePersonal(text) {
   return text.replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g, "[hidden email]")
     .replace(/\+?\d[\d\s-]{6,}\d/g, "[hidden number]");
 }
-function findFlags(text) {
-  const low = " " + text.toLowerCase() + " ";
-  return RED_FLAGS.map(f => {
-    const hits = f.words.filter(w => /^[a-z]+$/.test(w) ? new RegExp("\\b" + w + "\\b").test(low) : low.includes(w));
-    return hits.length ? { flag: f, hits } : null;
-  }).filter(Boolean);
-}
+function findFlags(text) { return ScamChecker.findFlags(text, RED_FLAGS); }   // js/checker.js reads the words around each clue
 function closest(text) {
   const a = new Set(words(text)); let best = null;
   ALL_EXAMPLES.forEach(ex => {
@@ -237,7 +231,7 @@ function verify() {
     <h3>${icon("verify")}Result</h3>
     <div class="risk ${level}">${label}</div>
     <div class="meter"><i style="left:4%"></i></div>
-    <ul class="flags">${found.length ? found.map(f => `<li><b>${esc(f.flag.label)}</b><br><small>Words: ${f.hits.map(esc).join(", ")}</small></li>`).join("")
+    <ul class="flags">${found.length ? found.map(f => `<li><b>${esc(f.flag.label)}</b><br><small>Words: ${f.hits.map(h => esc(h.trim())).join(", ")}</small></li>`).join("")
       : "<li><b>No common red flags found.</b><br><small>That does not prove it is safe. Still check who sent it.</small></li>"}</ul>
     <div class="highlight">${highlight(text, found)}</div>
     <div class="compare"><b>Closest made-up example (${simPct}% similar):</b> ${esc(best.type)}<br><i>"${esc(best.text)}"</i></div>
@@ -308,12 +302,13 @@ async function aiSecondOpinion(text, offlineLevel) {
     addPoints(1);
   } catch (e) {
     if (ticket !== aiTicket) return;
-    box.innerHTML = `<div class="ai off">${icon("shield")}<p><b>AI helper:</b> ${esc(e.name === "AbortError" ? "it took too long to answer." : e.message)} Use the offline result above.</p></div>`;
+    box.innerHTML = `<div class="ai off">${icon("shield")}<p><b>AI helper:</b> ${esc(e.name === "AbortError" ? "it took too long to answer." : e instanceof TypeError ? "could not connect right now." : e.message)} Use the offline result above.</p></div>`;
   }
 }
 function guessType(found, best) {
   const ids = found.map(f => f.flag.id);
   if (ids.includes("control")) return "Tech Support Scams";
+  if (ids.includes("freemoney")) return "Fake government grant";
   if (ids.includes("secret")) return "Phishing Scams";
   if (ids.includes("love")) return "Romance Scams";
   if (ids.includes("toogood")) return "Investment Scams";
@@ -323,7 +318,7 @@ function guessType(found, best) {
   return t ? t.title : "Not sure";
 }
 const TYPE_OPTIONS = SCAM_TYPES.map(t => `<option>${esc(t.title)}</option>`).join("") +
-  "<option>Fake payment alert</option><option>Delivery fee scam</option><option>Loan scam</option><option>Exam scam</option><option>Account takeover</option><option>Other</option><option>Not sure</option>";
+  "<option>Fake government grant</option><option>Fake payment alert</option><option>Delivery fee scam</option><option>Loan scam</option><option>Exam scam</option><option>Account takeover</option><option>Other</option><option>Not sure</option>";
 $("#repType").innerHTML = TYPE_OPTIONS;
 const ADVICE = {
   "No, I did not": "Well done for stopping. Don't reply. Block the sender and delete the message after you report it.",

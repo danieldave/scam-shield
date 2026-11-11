@@ -20,4 +20,4 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://scam-shield.vercel.app/sitemap.xml
+Sitemap: https://scam-shield-blond.vercel.app/sitemap.xml
