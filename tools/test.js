@@ -105,7 +105,9 @@ global.fetch = async (url) => {
   });
 
   console.log('SEO / AEO / GEO pages');
-  const htmls = ['index.html', 'faq/index.html', 'scams/index.html', ...fs.readdirSync(path.join(ROOT, 'scams')).filter(d => !d.includes('.')).map(d => `scams/${d}/index.html`)];
+  const DIRS = ['scams', 'is-it-real', 'help', 'on', 'for', 'meaning', 'signs'];
+  const htmls = ['index.html', 'faq/index.html', 'radar/index.html', 'widget/index.html',
+    ...DIRS.flatMap(dir => [`${dir}/index.html`, ...fs.readdirSync(path.join(ROOT, dir)).filter(d => !d.includes('.')).map(d => `${dir}/${d}/index.html`)])];
   for (const f of htmls) {
     await ok(f + ': title, description, canonical, one h1, valid JSON-LD', () => {
       const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
@@ -124,6 +126,69 @@ global.fetch = async (url) => {
     const ll = fs.readFileSync(path.join(ROOT, 'llms.txt'), 'utf8');
     assert.ok(rb.includes('Sitemap:')); assert.ok(ll.startsWith('# Scam Shield'));
     assert.strictEqual((sm.match(/<url>/g) || []).length, htmls.length);
+  });
+
+  // ---------- VERSION 3: the Scam Library, the Radar and the widget ----------
+  const L = require('./library');
+  await ok('library: every page has a unique address and every link points to a real page', () => {
+    const slugs = L.NAMED.map(n => n[0]);
+    assert.strictEqual(new Set(slugs).size, slugs.length);
+    [...L.CHANNELS.map(c => c[3]), ...L.PEOPLE.map(c => c[3]), ...L.TERMS.map(t => [t[4]])].flat().forEach(x => assert.ok(slugs.includes(x), x));
+    slugs.forEach(x => assert.ok(fs.existsSync(path.join(ROOT, 'is-it-real', x, 'index.html')), x));
+  });
+  await ok('library: examples are made up (no real links, no phone numbers)', () => {
+    L.NAMED.forEach(n => {
+      (n[4].match(/\b[\w-]+\.(com|ng|net|org|app|site|xyz)\b/gi) || []).forEach(l => assert.fail(n[0] + ' has a real-looking link: ' + l));
+      [n[3], n[4], n[6]].forEach(t => assert.ok(!/\b0[789]\d{9}\b|\+234/.test(t), n[0] + ' has a phone number'));
+    });
+    L.HELP.forEach(h => assert.ok(!/\b0[789]\d{9}\b|\+234/.test(h.flat().join(' ')), h[0]));
+  });
+  await ok('library: the offline checker flags most of our own examples', () => {
+    const vm = require('vm');
+    const D = vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8') + '\n;({ RED_FLAGS })', {});
+    require('../js/checker.js');
+    const risky = L.NAMED.filter(n => globalThis.ScamChecker.findFlags(n[4], D.RED_FLAGS).reduce((a, f) => a + f.flag.weight, 0) >= 3).length;
+    assert.ok(risky / L.NAMED.length >= 0.8, risky + ' of ' + L.NAMED.length);
+  });
+  await ok('library pages: quick answer first, one canonical, FAQ schema', () => {
+    const h = fs.readFileSync(path.join(ROOT, 'is-it-real/fg-grant-message/index.html'), 'utf8');
+    assert.ok(h.indexOf('answer-box') < h.indexOf('<h2>')); assert.strictEqual((h.match(/rel="canonical"/g) || []).length, 1);
+    assert.ok(h.includes('"FAQPage"')); assert.ok(h.includes('/signs/'));
+  });
+  await ok('radar: its lists match the checker', () => {
+    const vm = require('vm');
+    const D = vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8') + '\n;({ RED_FLAGS, SCAM_TYPES })', {});
+    const R = require('../api/radar.js');
+    assert.strictEqual([...R.FLAGS].sort().join(), Array.from(D.RED_FLAGS, f => f.id).sort().join());
+    D.SCAM_TYPES.forEach(t => assert.ok(R.TYPES.includes(t.id), t.id));
+  });
+  await ok('radar: without a database it says "not switched on" and never crashes', async () => {
+    delete process.env.KV_REST_API_URL; delete process.env.UPSTASH_REDIS_REST_URL;
+    const R = require('../api/radar.js');
+    const g = await call(R, { method: 'GET' }); assert.strictEqual(g.data.live, false);
+    const p = await call(R, { body: { type: 'phishing', flags: ['secret'] }, ip: '7.7.7.1' }); assert.strictEqual(p.data.counted, false);
+  });
+  await ok('radar: only labels from our list are counted, never text', async () => {
+    process.env.KV_REST_API_URL = 'https://db.example'; process.env.KV_REST_API_TOKEN = 't';
+    const real = global.fetch; let sent = null;
+    global.fetch = async (u, o) => { sent = JSON.parse(o.body); return { ok: true, json: async () => sent.map(() => ({ result: 1 })) }; };
+    const R = require('../api/radar.js');
+    const r = await call(R, { body: { type: 'my secret message 08012345678', flags: ['secret', 'secret', 'DROP TABLE', 'urgent'] }, ip: '7.7.7.2' });
+    assert.strictEqual(r.data.counted, true);
+    const text = JSON.stringify(sent);
+    assert.ok(text.includes('t:other') && text.includes('f:secret') && text.includes('f:urgent'));
+    assert.ok(!text.includes('DROP') && !text.includes('0801'));
+    assert.strictEqual(sent.filter(c => c[2] === 'f:secret').length, 1);
+    const bad = await call(R, { body: { flags: ['nonsense'] }, ip: '7.7.7.3' }); assert.strictEqual(bad.code, 400);
+    global.fetch = async () => ({ ok: true, json: async () => [{ result: ['total', '5', 't:phishing', '3', 'f:secret', '3'] }, ...Array(6).fill({ result: [] })] });
+    const g = await call(R, { method: 'GET' }); assert.strictEqual(g.data.total, 5); assert.strictEqual(g.data.types[0].id, 'phishing');
+    global.fetch = real; delete process.env.KV_REST_API_URL; delete process.env.KV_REST_API_TOKEN;
+  });
+  await ok('widget: /embed may be shown inside other websites, other pages may not', () => {
+    const v = JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8'));
+    const rule = v.headers.find(h => h.headers.some(x => x.key === 'X-Frame-Options'));
+    assert.ok(new RegExp('^' + rule.source + '$').test('/scams/phishing')); assert.ok(!new RegExp('^' + rule.source + '$').test('/embed'));
+    assert.ok(fs.readFileSync(path.join(ROOT, 'embed.html'), 'utf8').includes('noindex'));
   });
   await ok('no API key is written in any website file', () => {
     const files = ['index.html', 'js/app.js', 'js/config.js', 'js/data.js', 'js/checker.js'];

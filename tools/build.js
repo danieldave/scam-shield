@@ -26,6 +26,9 @@ const SITE = JSON.parse(fs.readFileSync(path.join(__dirname, 'site.json'), 'utf8
 const URL_ = SITE.url.replace(/\/$/, '');
 const TODAY = new Date().toISOString().slice(0, 10);
 const GUIDES = require('./guides');
+// Search Console codes: paste them into tools/site.json ("googleVerify", "bingVerify") and build again
+const VERIFY = (SITE.googleVerify ? `\n<meta name="google-site-verification" content="${SITE.googleVerify}">` : '') +
+  (SITE.bingVerify ? `\n<meta name="msvalidate.01" content="${SITE.bingVerify}">` : '');
 
 // Read js/data.js exactly as the browser does, then pick out the lists.
 const code = fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8');
@@ -53,6 +56,10 @@ const PUBLISHER = {
 // ---------- one shared page frame ----------
 function page({ rel, title, description, h1, crumbs, body, schema }) {
   const url = URL_ + '/' + rel.replace(/index\.html$/, '');
+  // Google cuts long titles, so keep them under about 70 letters
+  if (title.length > 70) title = title.replace(/ \| Scam Shield$/, '');
+  if (title.length > 70) title = title.replace(/[:?].*$/, m => m[0] === '?' ? '?' : '');
+  for (let n = 68; esc(title).length > 70 && n > 30; n -= 4) title = title.replace(/…$/, '').slice(0, n).replace(/\s\S*$/, '') + '…';
   const graph = [PUBLISHER, {
     '@type': 'BreadcrumbList',
     itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c[0], item: URL_ + c[1] }))
@@ -64,7 +71,7 @@ function page({ rel, title, description, h1, crumbs, body, schema }) {
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-<link rel="canonical" href="${url}">
+<link rel="canonical" href="${url}">${VERIFY}
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <meta name="theme-color" content="#12305A">
 <meta property="og:type" content="article">
@@ -84,7 +91,7 @@ function page({ rel, title, description, h1, crumbs, body, schema }) {
 <header class="topbar simple-top">
   <a class="brand" href="/" aria-label="Scam Shield home"><img src="/images/logo.svg" alt="" width="40" height="40"><span><b>Scam Shield</b><small>Think · Spot · Stay Safe</small></span></a>
   <nav class="topnav" aria-label="Main">
-    <a href="/scams/">Scam guides</a><a href="/faq/">FAQ</a><a href="/#verify">Verify a message</a><a href="/#quiz">Quiz</a>
+    <a href="/is-it-real/">Is it real?</a><a href="/help/">Help now</a><a href="/scams/">Scam guides</a><a href="/radar/">Radar</a><a href="/#verify">Check a message</a>
   </nav>
 </header>
 <main class="guide">
@@ -94,6 +101,7 @@ ${body}
   <p class="updated">Written by students of the ${esc(SITE.publisher)}. Last updated <time datetime="${TODAY}">${TODAY}</time>. All example messages are made up for learning.</p>
 </main>
 <footer class="foot">
+  <p class="footlinks"><a href="/is-it-real/">Is it real?</a> · <a href="/help/">Help now</a> · <a href="/scams/">Scam guides</a> · <a href="/on/">By app</a> · <a href="/for/">By person</a> · <a href="/signs/">Warning signs</a> · <a href="/meaning/">Words to know</a> · <a href="/radar/">Scam Radar</a> · <a href="/widget/">For your website</a> · <a href="/faq/">FAQ</a></p>
   <p><b>Scam Shield</b> is an educational awareness tool made by students, not a commercial fraud-detection system.</p>
   <p class="copyright">&copy; ${TODAY.slice(0, 4)} ${esc(SITE.publisher)}</p>
 </footer>
@@ -192,6 +200,11 @@ write('faq/index.html', page({
 }));
 pages.push({ loc: '/faq/', pri: '0.8' });
 
+// ---------- the Scam Library (version 3): tools/library.js ----------
+global.window = undefined;
+const Checker = (vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'js/checker.js'), 'utf8') + '\n;globalThis.ScamChecker', { globalThis: {} }) || {});
+const LIB = require('./build-library')({ page, write, esc, D, URL_, pages, ctas, doSteps, GUIDES, TODAY, Checker });
+
 // ---------- sitemap.xml ----------
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -240,6 +253,20 @@ Key facts:
 ## Scam guides
 ${D.SCAM_TYPES.map(t => `- [${t.title}](${URL_}/scams/${t.id}/): ${GUIDES[t.id].answer}`).join('\n')}
 
+## Is this message real? (one page per message, answer in the first sentence)
+${LIB.L.NAMED.map(n => `- [${n[1]}](${URL_}/is-it-real/${n[0]}/): ${n[3]}`).join('\n')}
+
+## What to do after a scam
+${LIB.L.HELP.map(n => `- [${n[1]}](${URL_}/help/${n[0]}/): ${n[2]}`).join('\n')}
+
+## Words to know
+${LIB.L.TERMS.map(n => `- [${n[1]}](${URL_}/meaning/${n[0]}/): ${n[2]}`).join('\n')}
+
+## More
+- [Scams by app](${URL_}/on/) and [scams by person](${URL_}/for/)
+- [Scam Radar](${URL_}/radar/): anonymous weekly counts of the kinds of scam being checked
+- [Free checker for other websites](${URL_}/widget/)
+
 ## Help
 - [Scam questions and answers](${URL_}/faq/): ${D.QA.length} short answers for students
 - [Check a message](${URL_}/#verify): paste a suspicious message to see its warning signs
@@ -256,5 +283,9 @@ if (old && old.replace(/\/$/, '') !== URL_) {
   fs.writeFileSync(indexFile, index);
   console.log('  updated index.html address:', old, '->', URL_);
 }
+
+index = fs.readFileSync(indexFile, 'utf8').replace(/\n<meta name="(google-site-verification|msvalidate\.01)"[^>]*>/g, '');
+if (VERIFY) index = index.replace(/(<link rel="canonical"[^>]*>)/, '$1' + VERIFY);
+fs.writeFileSync(indexFile, index);
 
 console.log('Done:', pages.length, 'pages in the sitemap.');

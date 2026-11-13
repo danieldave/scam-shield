@@ -140,4 +140,4 @@ async function checkLinks(links) {
   }
 }
 
-module.exports = { hidePersonal, frontDoor, askOpenAI, cacheGet, cacheSet, keyFor, findLinks, checkLinks, MAX_TEXT };
+module.exports = { allowOrigin, allowed, visitor, hidePersonal, frontDoor, askOpenAI, cacheGet, cacheSet, keyFor, findLinks, checkLinks, MAX_TEXT };

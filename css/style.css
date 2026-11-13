@@ -399,3 +399,23 @@ mark { background: #FFD3D5; color: inherit; border-radius: 4px; padding: 0 2px; 
 .foot-guides a { color: inherit; }
 .brand span { white-space: nowrap; }
 @media (max-width: 1360px) { .topnav a svg { display: none; } .topnav a { padding: 8px 9px; } }
+
+/* ===== VERSION 3: the Scam Library, Scam Radar and widget pages ===== */
+.library { margin: 34px 0 10px; }
+.library h2 { font-size: clamp(22px, 3.4vw, 30px); color: var(--navy); margin: 0 0 4px; }
+.lib-more { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.guide .steps li { margin: 10px 0; padding-left: 4px; }
+.guide .chips-links { line-height: 2; }
+.guide .chips-links span { white-space: nowrap; }
+.guide .code { background: #0E2242; color: #E6F0FF; padding: 14px; border-radius: 12px; font: 13.5px/1.5 ui-monospace, Menlo, Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+.guide iframe { margin-top: 6px; border-radius: 14px; box-shadow: var(--shadow); }
+.footlinks { line-height: 2; } .footlinks a { color: inherit; font-weight: 700; }
+.radar { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 16px; box-shadow: var(--shadow); margin: 16px 0; }
+.radar h2 { margin-top: 18px; }
+.radar-total { font-size: 17px; margin: 0; } .radar-total b { font-size: 30px; color: var(--blue); margin-right: 6px; }
+.radar .rbar { display: grid; grid-template-columns: minmax(0, 1fr) 40%  2.5em; gap: 8px; align-items: center; margin: 8px 0; font-size: 14.5px; }
+.radar .rbar i { display: block; height: 14px; border-radius: 8px; background: var(--blue); justify-self: start; }
+.radar .rbar b { text-align: right; }
+.simple-top .topnav { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+@media (max-width: 860px) { .simple-top { flex-wrap: wrap; height: auto; padding-bottom: 8px; } .simple-top .topnav { display: flex !important; width: 100%; overflow-x: auto; flex-wrap: nowrap; gap: 4px; }
+  .simple-top .topnav a { font-size: 14px !important; padding: 6px 10px !important; background: rgba(255,255,255,.1); border-radius: 999px; } }

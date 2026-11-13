@@ -243,6 +243,7 @@ function verify() {
   $("#repType").value = lastCheck.type;
   drawAdvice();
   if (window.innerWidth < 720) box.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (window.ScamRadar) ScamRadar.send(found);   // anonymous: only the KIND of scam, never the message
   aiSecondOpinion(text, level);
 }
 

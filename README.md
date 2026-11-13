@@ -17,6 +17,23 @@ It teaches students aged 9-17 to spot online scams, practise on made-up messages
 
 **Offline first:** if there is no internet or no key, everything still works with the offline checker and our own guide.
 
+## New in version 3: the Scam Library, Scam Radar and the widget
+
+| What | Where | Why it matters |
+|---|---|---|
+| **Scam Library** (124 real pages) | `tools/library.js` → `/is-it-real/`, `/help/`, `/on/`, `/for/`, `/meaning/`, `/signs/` | People search for the exact message on their phone ("is the FG grant message real?"). Each page answers one question in its first sentence, which is what Google and AI tools quote. |
+| **Scam Radar** | `/radar/`, `api/radar.js`, `js/radar.js` | Anonymous weekly counts of the *kinds* of scam being checked. Only short labels are sent, never the message. |
+| **Checker for other websites** | `/widget/`, `embed.html` | Schools, banks and community groups paste one line of code to show our checker on their own site. |
+| **Smarter offline checker** | `js/data.js` | Writing the library showed 11 scam messages the checker missed. It now catches code requests ("send me the 6 digits"), "to this account" and fake credit alerts. |
+
+**To add a page:** add one entry to `tools/library.js`, run `node tools/build.js`, then `npm test`.
+
+**To switch the Scam Radar on (adult job, free):** in Vercel open the project → **Storage** → **Create Database** → **Upstash for Redis** → connect it to this project → **Redeploy**. Vercel adds the two settings (`KV_REST_API_URL`, `KV_REST_API_TOKEN`) by itself. Until then the radar page says it is not switched on.
+
+**Search Console codes:** paste them into `tools/site.json` as `"googleVerify"` and `"bingVerify"`, then run `node tools/build.js`. Every page gets the tags.
+
+**Moving to our own domain:** change `"url"` in `tools/site.json`, build again, and add the new address to `ALLOWED_ORIGINS` in Vercel.
+
 ## Put it live on Vercel (one time)
 
 1. Go to vercel.com → **Add New → Project** → import `danieldave/scam-shield` from GitHub. No build settings are needed.

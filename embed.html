@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en-NG">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scam Shield message checker</title>
+<meta name="robots" content="noindex">
+<style>
+  * { box-sizing: border-box; } body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #12305A; background: #F4F9FF; }
+  .w { padding: 14px; } h1 { font-size: 19px; margin: 0 0 2px; display: flex; gap: 8px; align-items: center; } h1 img { width: 28px; height: 28px; }
+  p { margin: 6px 0; } small, .note { color: #4D6283; font-size: 13px; }
+  textarea { width: 100%; min-height: 110px; padding: 10px; border: 2px solid #C9DCF5; border-radius: 12px; font: inherit; background: #fff; color: inherit; }
+  button { width: 100%; margin-top: 8px; padding: 12px; border: 0; border-radius: 12px; background: #1F6FEB; color: #fff; font: 700 16px system-ui; cursor: pointer; }
+  .risk { margin-top: 12px; padding: 10px 12px; border-radius: 12px; font-weight: 800; }
+  .high { background: #FDE3E3; color: #9B1C1C; } .medium { background: #FFF1CC; color: #7A4B00; } .low { background: #DDF5E4; color: #14532D; }
+  ul { margin: 8px 0; padding-left: 20px; } li { margin: 4px 0; } a { color: #1F6FEB; font-weight: 700; }
+  .by { margin-top: 10px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1><img src="/images/logo.svg" alt="">Is this message a scam?</h1>
+  <small>Paste the message. It is checked on your phone and never sent anywhere.</small>
+  <textarea id="t" maxlength="2000" placeholder="Paste the SMS, WhatsApp or email message here"></textarea>
+  <button id="b" type="button">Check the message</button>
+  <div id="r" aria-live="polite"></div>
+  <p class="by"><a href="https://scam-shield-blond.vercel.app/" target="_blank" rel="noopener" id="home">Free from Scam Shield: guides, practice and quiz →</a></p>
+</div>
+<script src="/js/data.js"></script>
+<script src="/js/checker.js"></script>
+<script src="/js/radar.js"></script>
+<script>
+  document.getElementById("home").href = location.origin + "/";
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  document.getElementById("b").onclick = () => {
+    const text = document.getElementById("t").value.trim(), box = document.getElementById("r");
+    if (text.length < 15) { box.innerHTML = '<p class="note">Please paste a longer message (at least a full sentence).</p>'; return; }
+    const found = ScamChecker.findFlags(text, RED_FLAGS);
+    const risk = found.reduce((n, f) => n + f.flag.weight, 0);
+    const level = risk >= 6 ? "high" : risk >= 3 ? "medium" : "low";
+    box.innerHTML = '<div class="risk ' + level + '">' + { high: "HIGH: many scam warning signs", medium: "MEDIUM: some warning signs", low: "LOW: few warning signs found" }[level] + '</div>' +
+      '<ul>' + (found.length ? found.map(f => '<li><a target="_blank" rel="noopener" href="/signs/' + f.flag.id + '/">' + esc(f.flag.label) + '</a></li>').join("")
+        : "<li>No common warning signs found. That does not prove it is safe.</li>") + '</ul>' +
+      '<p class="note">Stop, do not share codes or money, check with a contact you already trust, and tell a trusted adult. This learning tool can be wrong.</p>';
+    ScamRadar.send(found);
+  };
+</script>
+</body>
+</html>
