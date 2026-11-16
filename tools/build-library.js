@@ -214,6 +214,25 @@ module.exports = function ({ page, write, esc, D, URL_, pages, ctas, doSteps, GU
   }));
   pages.push({ loc: '/radar/', pri: '0.8' });
 
+  // ---------- /drill/ : the Scam Drill ----------
+  write('drill/index.html', page({
+    rel: 'drill/index.html', title: 'Scam Drill: can you tell a scam from a safe message? | Scam Shield',
+    description: 'A free 10-message game. Read each message, decide if it is a scam or safe, and see the warning signs you missed. Share your score and challenge a friend.',
+    h1: 'Scam Drill: scam or safe?', crumbs: [['Home', '/'], ['Scam Drill', '/drill/']],
+    body: `
+  <p class="answer-box"><b>How it works:</b> you get 10 messages. Six are scams, four are safe, in a random order. Tap <b>SCAM</b> or <b>SAFE</b>. After each answer you see the warning signs. Nothing you do here is saved or sent.</p>
+  <div id="drill" class="drill" aria-live="polite"></div>
+  <p class="note">Every message is made up for practice. Teachers: put this on the board and let the class vote on each message.</p>
+  <style>.drill{max-width:560px;margin:18px auto}.d-count{font-weight:700;margin:0 0 6px}.d-bar{height:8px;border-radius:8px;background:var(--line);overflow:hidden;margin-bottom:14px}.d-bar i{display:block;height:100%;background:var(--blue);transition:width .3s}
+  .d-phone{background:var(--navy);border-radius:26px;padding:16px;box-shadow:var(--shadow)}.d-msg{background:#fff;color:#16243A;border-radius:16px 16px 16px 4px;padding:14px 16px;font-size:17px;line-height:1.5;min-height:110px}
+  .d-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.d-btns .btn{padding:16px 10px;font-size:17px;font-weight:800}.d-btns .btn:only-child{grid-column:1/-1}.d-scam{background:var(--red)}.d-safe{background:var(--green)}
+  .d-result{border-radius:16px;padding:14px 16px;margin-top:12px}.d-result.good{background:#DDF5E7;color:#0C4A30}.d-result.bad{background:#FDE3E4;color:#7A1020}.d-result ul{margin:6px 0 0;padding-left:20px}
+  .d-end{text-align:center;background:var(--card);border-radius:20px;padding:26px 18px;box-shadow:var(--shadow)}.d-big{font-size:64px}.d-end h2{margin:6px 0}</style>
+  <script src="/js/data.js"></script><script src="/js/checker.js"></script><script src="/js/drill-data.js"></script><script src="/js/drill.js"></script>`,
+    schema: [{ '@type': 'Quiz', name: 'Scam Drill', about: 'Recognising scam messages', educationalLevel: 'Beginner', isAccessibleForFree: true }]
+  }));
+  pages.push({ loc: '/drill/', pri: '0.8' });
+
   // ---------- /widget/ ----------
   const code = `<iframe src="${URL_}/embed" title="Scam Shield message checker" width="100%" height="560" style="border:0;max-width:520px" loading="lazy"></iframe>`;
   write('widget/index.html', page({

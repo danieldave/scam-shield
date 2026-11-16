@@ -106,7 +106,7 @@ global.fetch = async (url) => {
 
   console.log('SEO / AEO / GEO pages');
   const DIRS = ['scams', 'is-it-real', 'help', 'on', 'for', 'meaning', 'signs'];
-  const htmls = ['index.html', 'faq/index.html', 'radar/index.html', 'widget/index.html',
+  const htmls = ['index.html', 'faq/index.html', 'radar/index.html', 'widget/index.html', 'drill/index.html',
     ...DIRS.flatMap(dir => [`${dir}/index.html`, ...fs.readdirSync(path.join(ROOT, dir)).filter(d => !d.includes('.')).map(d => `${dir}/${d}/index.html`)])];
   for (const f of htmls) {
     await ok(f + ': title, description, canonical, one h1, valid JSON-LD', () => {

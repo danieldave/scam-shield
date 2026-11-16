@@ -89,3 +89,6 @@ Scam Shield is an educational tool made by students, not a commercial fraud-dete
 
 ## Blind-spot test
 `node tools/blindspots.js` runs scams the checker has never seen (English, Pidgin, Yoruba, Hausa, Igbo) and normal safe messages, then lists misses and false alarms. Add new messages there each month, run it, and teach `js/data.js` the missing clue words. `--strict` makes it fail when more than 10% of scams are missed.
+
+## Scam Drill (`/drill/`)
+A 10-message game: six scams and four safe messages in random order, taken from the blind-spot test list. After each answer the site's own checker shows the warning signs it found. Ends with a score, a rank and a "challenge a friend" share button. Runs on the phone; nothing is sent or saved.
