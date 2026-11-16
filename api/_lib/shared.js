@@ -90,7 +90,7 @@ async function fuseOK() {
   const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), 2000);
   try {
     const r = await fetch(url + '/pipeline', { method: 'POST', signal: ctrl.signal, headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
-      body: JSON.stringify([['INCR', 'fuse:' + day], ['EXPIRE', 'fuse:' + day, 172800]]) });
+      body: JSON.stringify([['INCR', 'fuse:scam:' + day], ['EXPIRE', 'fuse:scam:' + day, 172800]]) });
     const rows = await r.json();
     return !(Number(rows && rows[0] && rows[0].result) > max);
   } catch (e) { return true; }                       // if the counter is unreachable, this copy's own count still protects us
@@ -111,7 +111,7 @@ async function frontDoor(req, res, { limit }) {
 
 // ---------- 5. Talk to OpenAI and always get JSON back ----------
 async function askOpenAI(system, user, maxTokens) {
-  if (!(await fuseOK())) throw new Error('daily AI limit reached');
+  if (!(await fuseOK())) throw Object.assign(new Error('daily AI limit reached'), { code: 'daily-limit' });
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 20000);                 // give up after 20 seconds
   try {
@@ -127,7 +127,7 @@ async function askOpenAI(system, user, maxTokens) {
         messages: [{ role: 'system', content: system }, { role: 'user', content: user }]
       })
     });
-    if (!r.ok) throw new Error('OpenAI said ' + r.status);
+    if (!r.ok) throw Object.assign(new Error('OpenAI said ' + r.status), { code: 'ai-' + r.status });   // 401 = key problem, 429 = no credit or too busy
     const data = await r.json();
     return JSON.parse(data.choices[0].message.content);
   } finally {
