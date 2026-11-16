@@ -86,3 +86,6 @@ scams/ faq/           generated guide pages (do not edit by hand: edit guides.js
 ```
 
 Scam Shield is an educational tool made by students, not a commercial fraud-detection system. All example messages are fictional.
+
+## Blind-spot test
+`node tools/blindspots.js` runs scams the checker has never seen (English, Pidgin, Yoruba, Hausa, Igbo) and normal safe messages, then lists misses and false alarms. Add new messages there each month, run it, and teach `js/data.js` the missing clue words. `--strict` makes it fail when more than 10% of scams are missed.
